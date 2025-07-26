@@ -1,0 +1,29 @@
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.App {
+  text-align: center;
+}
+
+.hero {
+  background: linear-gradient(135deg, #00bcd4, #0097a7);
+  color: white;
+  padding: 100px 20px;
+}
+
+.services,
+.about,
+.contact {
+  padding: 60px 20px;
+}
+
+.services ul {
+  list-style: none;
+  padding: 0;
+}
+
+.services li {
+  margin: 10px 0;
+}
