@@ -1,33 +1,37 @@
 import React from 'react';
-import './App.css';
+import Navbar from './components/Navbar';
+import HeroSection from './sections/HeroSection';
+import ValueSection from './sections/ValueSection';
+import MaterialsSection from './sections/MaterialsSection';
+import ServicesSection from './sections/ServicesSection';
+import ProjectsSection from './sections/ProjectsSection';
+import ProcessSection from './sections/ProcessSection';
+import WhyUsSection from './sections/WhyUsSection';
+import LocalTrustSection from './sections/LocalTrustSection';
+import TestimonialsSection from './sections/TestimonialsSection';
+import FinalCtaSection from './sections/FinalCtaSection';
+import ContactSection from './sections/ContactSection';
+import Footer from './sections/Footer';
 
 function App() {
   return (
-    <div className="App">
-      <header className="hero">
-        <h1>Bienvenido a NOVEX</h1>
-        <p>Soluciones tecnológicas a tu alcance</p>
-      </header>
-      <section className="services">
-        <h2>Servicios</h2>
-        <ul>
-          <li>Desarrollo de software a medida</li>
-          <li>Consultoría tecnológica</li>
-          <li>Soporte y mantenimiento</li>
-        </ul>
-      </section>
-      <section className="about">
-        <h2>Nosotros</h2>
-        <p>
-          En NOVEX nos especializamos en brindar soluciones innovadoras para
-          potenciar tu negocio.
-        </p>
-      </section>
-      <section className="contact">
-        <h2>Contacto</h2>
-        <p>Escríbenos a contacto@novex.com</p>
-      </section>
-    </div>
+    <>
+      <Navbar />
+      <main>
+        <HeroSection />
+        <ValueSection />
+        <MaterialsSection />
+        <ServicesSection />
+        <ProjectsSection />
+        <ProcessSection />
+        <WhyUsSection />
+        <LocalTrustSection />
+        <TestimonialsSection />
+        <FinalCtaSection />
+        <ContactSection />
+      </main>
+      <Footer />
+    </>
   );
 }
 
