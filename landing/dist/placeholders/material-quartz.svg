@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-label="Placeholder cuarzo">
+  <defs>
+    <linearGradient id="q" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#d9c6ae"/>
+      <stop offset="100%" stop-color="#8e7962"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="900" fill="url(#q)"/>
+  <g stroke="#f1e9de" stroke-opacity="0.58" stroke-width="5" fill="none">
+    <path d="M80 200h1040"/><path d="M120 330h960"/><path d="M90 460h1020"/><path d="M140 590h940"/>
+  </g>
+  <g fill="#f1e9de" fill-opacity="0.22">
+    <rect x="220" y="250" width="150" height="28" rx="14"/>
+    <rect x="720" y="370" width="190" height="28" rx="14"/>
+    <rect x="470" y="520" width="220" height="28" rx="14"/>
+  </g>
+  <text x="62" y="830" fill="#2d2926" font-size="50" font-family="Arial, Helvetica, sans-serif">CUARZO · PLACEHOLDER</text>
+</svg>

@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1200" role="img" aria-label="Placeholder interior premium">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#4f4438"/>
+      <stop offset="55%" stop-color="#2b2724"/>
+      <stop offset="100%" stop-color="#1a1b1e"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="70%" cy="20%" r="55%">
+      <stop offset="0%" stop-color="#bfa07b" stop-opacity="0.38"/>
+      <stop offset="100%" stop-color="#bfa07b" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1600" height="1200" fill="url(#bg)"/>
+  <rect width="1600" height="1200" fill="url(#glow)"/>
+  <rect x="760" y="130" width="720" height="940" rx="22" fill="#242223" stroke="#6b6259"/>
+  <rect x="810" y="180" width="620" height="640" rx="16" fill="#3f362f"/>
+  <path d="M910 780h420v180H910z" fill="#2e2a27"/>
+  <path d="M890 260a240 240 0 0 1 480 0v220H890z" fill="none" stroke="#bfa07b" stroke-width="8"/>
+  <rect x="0" y="940" width="1600" height="260" fill="#272523"/>
+  <text x="120" y="990" fill="#ece5da" font-size="44" font-family="Arial, Helvetica, sans-serif" letter-spacing="2">PLACEHOLDER HERO</text>
+  <text x="120" y="1044" fill="#c4b8ab" font-size="28" font-family="Arial, Helvetica, sans-serif">Interior cocina/bano para pruebas de composicion</text>
+</svg>

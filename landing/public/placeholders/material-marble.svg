@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-label="Placeholder marmol">
+  <defs>
+    <linearGradient id="m" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#d8cdbf"/>
+      <stop offset="100%" stop-color="#a79684"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="900" fill="url(#m)"/>
+  <path d="M-20 210c170 40 240-50 430 20 160 59 250-35 430 15 165 46 220-28 370 30" stroke="#f1e9de" stroke-opacity="0.8" stroke-width="16" fill="none"/>
+  <path d="M-20 430c150 45 225-35 420 25 170 52 255-30 435 20 160 43 230-26 365 24" stroke="#ece5da" stroke-opacity="0.72" stroke-width="12" fill="none"/>
+  <text x="62" y="830" fill="#2d2926" font-size="50" font-family="Arial, Helvetica, sans-serif">MARMOL · PLACEHOLDER</text>
+</svg>

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-label="Placeholder granito">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#5f5b58"/>
+      <stop offset="100%" stop-color="#2d2b2b"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="900" fill="url(#g)"/>
+  <g fill="#ece5da" fill-opacity="0.22">
+    <circle cx="120" cy="200" r="6"/><circle cx="210" cy="150" r="5"/><circle cx="260" cy="360" r="7"/>
+    <circle cx="430" cy="250" r="5"/><circle cx="520" cy="390" r="7"/><circle cx="640" cy="170" r="6"/>
+    <circle cx="740" cy="480" r="8"/><circle cx="880" cy="230" r="7"/><circle cx="1010" cy="320" r="6"/>
+    <circle cx="1140" cy="180" r="5"/><circle cx="980" cy="570" r="7"/><circle cx="760" cy="690" r="6"/>
+  </g>
+  <text x="62" y="830" fill="#ece5da" font-size="50" font-family="Arial, Helvetica, sans-serif">GRANITO · PLACEHOLDER</text>
+</svg>

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-label="Proyecto 2 placeholder">
+  <rect width="1200" height="900" fill="#2f2d2c"/>
+  <rect x="130" y="130" width="940" height="640" rx="18" fill="#4b443d"/>
+  <circle cx="600" cy="430" r="210" fill="none" stroke="#bfa07b" stroke-width="14"/>
+  <rect x="310" y="530" width="580" height="120" fill="#1e1d1d"/>
+  <text x="120" y="840" fill="#ece5da" font-size="44" font-family="Arial, Helvetica, sans-serif">PROYECTO BANO · PLACEHOLDER</text>
+</svg>
