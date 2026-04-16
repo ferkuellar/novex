@@ -1019,6 +1019,8 @@ p { margin: 0; color: var(--muted); font-size: .98rem; }
 
   .gallery-grid {
     grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 1.1rem;
+    grid-auto-flow: dense;
     grid-auto-rows: auto;
   }
 
@@ -1027,16 +1029,35 @@ p { margin: 0; color: var(--muted); font-size: .98rem; }
     grid-row: auto;
   }
 
-  .project-card.p1 {
-    grid-column: span 7;
-  }
+  .project-card.p1 { grid-column: span 7; }
+  .project-card.p2 { grid-column: span 5; }
+  .project-card.p3,
+  .project-card.p4,
+  .project-card.p5 { grid-column: span 4; }
+  .project-card.p6 { grid-column: span 6; }
+  .project-card.p7,
+  .project-card.p8 { grid-column: span 3; }
+  .project-card.p9 { grid-column: span 5; }
+  .project-card.p10 { grid-column: span 7; }
+  .project-card.p11,
+  .project-card.p12,
+  .project-card.p13 { grid-column: span 4; }
+  .project-card.p14 { grid-column: span 8; }
+  .project-card.p15 { grid-column: span 4; }
 
-  .project-card.p4 { grid-column: span 6; }
-
-  .project-card.p1 .project-image { aspect-ratio: 16 / 9; }
-  .project-card.p2 .project-image { aspect-ratio: 5 / 4; }
-  .project-card.p3 .project-image { aspect-ratio: 4 / 5; }
-  .project-card.p4 .project-image { aspect-ratio: 3 / 2; }
+  .project-card.p1 .project-image { aspect-ratio: 16 / 10; }
+  .project-card.p2 .project-image { aspect-ratio: 4 / 5; }
+  .project-card.p3 .project-image { aspect-ratio: 4 / 3; }
+  .project-card.p4 .project-image { aspect-ratio: 4 / 5; }
   .project-card.p5 .project-image { aspect-ratio: 4 / 3; }
-  .project-card.p6 .project-image { aspect-ratio: 4 / 5; }
+  .project-card.p6 .project-image { aspect-ratio: 16 / 9; }
+  .project-card.p7 .project-image,
+  .project-card.p8 .project-image { aspect-ratio: 1 / 1; }
+  .project-card.p9 .project-image { aspect-ratio: 3 / 4; }
+  .project-card.p10 .project-image { aspect-ratio: 16 / 9; }
+  .project-card.p11 .project-image { aspect-ratio: 4 / 3; }
+  .project-card.p12 .project-image { aspect-ratio: 5 / 4; }
+  .project-card.p13 .project-image { aspect-ratio: 4 / 5; }
+  .project-card.p14 .project-image { aspect-ratio: 21 / 9; }
+  .project-card.p15 .project-image { aspect-ratio: 4 / 5; }
 }
