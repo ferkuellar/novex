@@ -1,5 +1,6 @@
 import React from 'react';
 import Navbar from './components/Navbar';
+import CookieConsentBanner from './components/CookieConsentBanner';
 import HeroSection from './sections/HeroSection';
 import ValueSection from './sections/ValueSection';
 import MaterialsSection from './sections/MaterialsSection';
@@ -31,6 +32,7 @@ function App() {
         <ContactSection />
       </main>
       <Footer />
+      <CookieConsentBanner />
     </>
   );
 }

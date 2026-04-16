@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-label="Proyecto 1 placeholder">
+  <rect width="1200" height="900" fill="#3a3430"/>
+  <rect x="110" y="120" width="980" height="650" rx="18" fill="#5f5041"/>
+  <rect x="220" y="220" width="760" height="430" rx="14" fill="#2b2724"/>
+  <rect x="220" y="650" width="760" height="90" fill="#bfa07b" fill-opacity="0.42"/>
+  <text x="120" y="840" fill="#ece5da" font-size="44" font-family="Arial, Helvetica, sans-serif">PROYECTO COCINA · PLACEHOLDER</text>
+</svg>

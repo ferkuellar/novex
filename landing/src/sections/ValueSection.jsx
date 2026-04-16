@@ -24,7 +24,12 @@ function ValueSection() {
   return (
     <section className="section muted-section" id="nosotros">
       <div className="container">
-        <SectionHeading title="Más que una cubierta: una pieza que define el espacio" centered />
+        <SectionHeading
+          eyebrow="Nuestra propuesta"
+          title="Más que una cubierta: una pieza que define el espacio"
+          subtitle="Combinamos dirección estética, criterio técnico y ejecución precisa para elevar el resultado final."
+          centered
+        />
         <div className="grid cards-4">
           {blocks.map((item) => (
             <article key={item.title} className="card reveal">

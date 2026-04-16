@@ -4,22 +4,22 @@ import SectionHeading from '../components/SectionHeading';
 const materials = [
   {
     name: 'Mármol',
-    desc: 'Vetas únicas y presencia escultórica para proyectos que buscan sofisticación atemporal.',
-    label: 'Elegancia natural',
+    desc: 'Vetas irrepetibles y presencia escultórica para interiores que buscan sofisticación atemporal.',
+    label: 'Sofisticación atemporal',
     tone: 'marble',
     image: '/placeholders/material-marble.svg',
   },
   {
     name: 'Granito',
-    desc: 'Material de carácter sólido y alta resistencia, ideal para cocinas de uso intenso.',
-    label: 'Alta resistencia',
+    desc: 'Superficie de gran dureza y desempeño estructural, ideal para cocinas de uso exigente.',
+    label: 'Máxima durabilidad',
     tone: 'granite',
     image: '/placeholders/material-granite.svg',
   },
   {
     name: 'Cuarzo',
-    desc: 'Estética contemporánea con amplia variedad de tonos y una superficie de fácil cuidado.',
-    label: 'Bajo mantenimiento',
+    desc: 'Acabado uniforme y contemporáneo con amplia variedad de tonos para proyectos de diseño limpio.',
+    label: 'Diseño versátil',
     tone: 'quartz',
     image: '/placeholders/material-quartz.svg',
   },
@@ -29,7 +29,12 @@ function MaterialsSection() {
   return (
     <section className="section" id="materiales">
       <div className="container">
-        <SectionHeading eyebrow="Materiales" title="Mármol, granito y cuarzo para espacios de alto nivel" />
+        <SectionHeading
+          eyebrow="Materiales"
+          title="Materiales que combinan estética, desempeño y valor a largo plazo"
+          subtitle="Seleccionamos mármol, granito y cuarzo según el lenguaje arquitectónico del proyecto, nivel de uso y mantenimiento esperado."
+          centered
+        />
         <div className="grid cards-3">
           {materials.map((item) => (
             <article key={item.name} className="material-card reveal">
@@ -45,7 +50,7 @@ function MaterialsSection() {
           ))}
         </div>
         <p className="advisory">
-          Te ayudamos a elegir el material correcto según diseño, uso y presupuesto.
+          Te asesoramos para elegir la superficie ideal según estilo, presupuesto y ritmo de uso diario.
         </p>
       </div>
     </section>
