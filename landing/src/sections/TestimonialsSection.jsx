@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import SectionHeading from '../components/SectionHeading';
+import localTestimonialsData from '../../server/data/testimonials.json';
 
 function resolveApiBase() {
   const fromEnv = (import.meta.env.VITE_API_BASE || '').replace(/\/$/, '');
@@ -8,12 +9,14 @@ function resolveApiBase() {
   }
 
   const { protocol, hostname } = window.location;
+  const isLocalHost = hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1';
+  const preferredLocal = isLocalHost ? `${protocol}//127.0.0.1:8787` : '';
   const directHostProtocol = `${protocol}//${hostname}:8787`;
   const directHostHttp = `http://${hostname}:8787`;
   const relativeApi = '';
 
   // Prefer direct API host first; relative path can be a false-positive on static hosts.
-  return Array.from(new Set([fromEnv, directHostProtocol, directHostHttp, relativeApi].filter(Boolean)));
+  return Array.from(new Set([fromEnv, preferredLocal, directHostProtocol, directHostHttp, relativeApi].filter(Boolean)));
 }
 
 function normalizeTestimonial(item, index) {
@@ -26,8 +29,18 @@ function normalizeTestimonial(item, index) {
   };
 }
 
+const localTestimonialsFallback = (Array.isArray(localTestimonialsData) ? localTestimonialsData : [])
+  .map((item, index) => normalizeTestimonial(item, index))
+  .filter((item) => item.quote)
+  .sort((a, b) => {
+    const aTs = Date.parse(String(a.createdAt || ''));
+    const bTs = Date.parse(String(b.createdAt || ''));
+    if (Number.isFinite(aTs) && Number.isFinite(bTs) && aTs !== bTs) return bTs - aTs;
+    return String(b.id || '').localeCompare(String(a.id || ''));
+  });
+
 function TestimonialsSection() {
-  const [testimonials, setTestimonials] = useState([]);
+  const [testimonials, setTestimonials] = useState(localTestimonialsFallback);
   const [loadingTestimonials, setLoadingTestimonials] = useState(true);
   const [testimonialsError, setTestimonialsError] = useState('');
   const [visibleCount, setVisibleCount] = useState(4);
@@ -40,7 +53,7 @@ function TestimonialsSection() {
       grouped.push(testimonials.slice(i, i + visibleCount));
     }
     return grouped;
-  }, [visibleCount]);
+  }, [testimonials, visibleCount]);
   const totalPages = pages.length;
 
   const activePage = useMemo(() => {
@@ -67,15 +80,12 @@ function TestimonialsSection() {
 
     const loadTestimonials = async () => {
       const apiBaseCandidates = resolveApiBase();
-      let loaded = false;
+      const successfulResponses = [];
 
       for (const base of apiBaseCandidates) {
         try {
           const response = await fetch(`${base}/api/testimonials?ts=${Date.now()}`, {
             cache: 'no-store',
-            headers: {
-              'Cache-Control': 'no-cache',
-            },
           });
           if (!response.ok) continue;
 
@@ -96,22 +106,26 @@ function TestimonialsSection() {
               return String(b.id || '').localeCompare(String(a.id || ''));
             });
 
-          if (!cancelled) {
-            setTestimonials(normalizedItems);
-            setTestimonialsError('');
-            setLoadingTestimonials(false);
-          }
-          loaded = true;
-          break;
+          successfulResponses.push({ base, items: normalizedItems });
         } catch (error) {
           // try next base
         }
       }
 
-      if (!loaded && !cancelled) {
-        setTestimonials([]);
+      if (cancelled) return;
+
+      if (successfulResponses.length > 0) {
+        const best = successfulResponses.sort((a, b) => b.items.length - a.items.length)[0];
+        setTestimonials(best.items.length ? best.items : localTestimonialsFallback);
+        setTestimonialsError(best.items.length ? '' : 'Mostrando respaldo local de experiencias.');
         setLoadingTestimonials(false);
-        setTestimonialsError('No se pudieron cargar las experiencias.');
+        return;
+      }
+
+      if (!cancelled) {
+        setTestimonials(localTestimonialsFallback);
+        setLoadingTestimonials(false);
+        setTestimonialsError(localTestimonialsFallback.length ? 'Mostrando respaldo local de experiencias.' : 'No se pudieron cargar las experiencias.');
       }
     };
 
@@ -257,7 +271,7 @@ function TestimonialsSection() {
                 →
               </button>
             </div>
-            <p className="carousel-status" aria-live="polite">{activePage + 1} de {totalPages}</p>
+            <p className="carousel-status" aria-live="polite">{totalPages ? activePage + 1 : 0} de {totalPages}</p>
           </div>
 
           <div className="carousel-dots" role="tablist" aria-label="Navegación de testimonios">

@@ -7,8 +7,8 @@ function resolveApiBase() {
   if (typeof window === 'undefined') return '';
 
   const { protocol, hostname } = window.location;
-  const isLocalHost = hostname === 'localhost' || hostname === '127.0.0.1';
-  if (isLocalHost) return `${protocol}//${hostname}:8787`;
+  const isLocalHost = hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1';
+  if (isLocalHost) return `${protocol}//127.0.0.1:8787`;
   return '';
 }
 
