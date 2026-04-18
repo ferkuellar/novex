@@ -17,18 +17,16 @@ const testimonials = [
   ['Claudia H.', 'Renovación de cocina', 'La diferencia está en los detalles. Se ve elegante, sólido y de alta calidad.'],
   ['Arq. Iván D.', 'Desarrollo residencial', 'Coordinación excelente con obra y entregas puntuales. Muy buen estándar de instalación.'],
   ['Gabriela S.', 'Proyecto familiar', 'Recibimos acompañamiento de principio a fin. Quedamos felices con el material y la terminación.'],
+  ['Renata M.', 'Cocina contemporánea', 'Nos orientaron muy bien para elegir el acabado. El resultado final se ve limpio, elegante y funcional.'],
+  ['Miguel Á.', 'Barra para terraza', 'Excelente ejecución en cortes y cantos. La pieza quedó firme, bien nivelada y lista para uso diario.'],
+  ['Arq. Paola R.', 'Remodelación integral', 'Aportaron soluciones prácticas durante obra y cuidaron tiempos. La instalación fue ordenada y profesional.'],
+  ['Héctor B.', 'Recepción comercial', 'Necesitábamos una imagen sobria y resistente. Cumplieron con calidad, detalle y muy buena comunicación.'],
+  ['Valeria C.', 'Baño secundario', 'El equipo llegó puntual, trabajó con cuidado y dejó todo limpio. Quedamos muy satisfechos con el acabado.'],
 ];
 
 function TestimonialsSection() {
   const total = testimonials.length;
-  const getVisibleCount = () => {
-    if (typeof window === 'undefined') return 1;
-    if (window.innerWidth >= 1040) return 3;
-    if (window.innerWidth >= 760) return 2;
-    return 1;
-  };
-
-  const [visibleCount, setVisibleCount] = useState(getVisibleCount);
+  const [visibleCount, setVisibleCount] = useState(4);
   const [activePage, setActivePage] = useState(0);
   const [paused, setPaused] = useState(false);
   const pages = [];
@@ -43,12 +41,19 @@ function TestimonialsSection() {
   };
 
   useEffect(() => {
-    const onResize = () => {
-      setVisibleCount(getVisibleCount());
+    const mediaQuery = window.matchMedia('(max-width: 759px)');
+    const syncVisibleCount = () => {
+      setVisibleCount(mediaQuery.matches ? 1 : 4);
     };
 
-    window.addEventListener('resize', onResize);
-    return () => window.removeEventListener('resize', onResize);
+    syncVisibleCount();
+    if (typeof mediaQuery.addEventListener === 'function') {
+      mediaQuery.addEventListener('change', syncVisibleCount);
+      return () => mediaQuery.removeEventListener('change', syncVisibleCount);
+    }
+
+    mediaQuery.addListener(syncVisibleCount);
+    return () => mediaQuery.removeListener(syncVisibleCount);
   }, []);
 
   useEffect(() => {
@@ -68,7 +73,15 @@ function TestimonialsSection() {
   return (
     <section className="section muted-section">
       <div className="container">
-        <SectionHeading eyebrow="Testimonios" title="Experiencias reales de clientes en Chihuahua" />
+        <SectionHeading
+          eyebrow="Testimonios"
+          title={
+            <>
+              <span className="section-title-main">Experiencias reales</span>
+              <span className="section-title-subline">de clientes en Chihuahua</span>
+            </>
+          }
+        />
         <div
           className="testimonials-carousel reveal"
           style={{ '--cards-per-view': visibleCount }}

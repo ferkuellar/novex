@@ -25,10 +25,16 @@ function Footer() {
           <p>Chihuahua, Chihuahua, México</p>
           <p>Tel: (614) 177 7711</p>
           <p>WhatsApp: (614) 177 7711</p>
-          <a href="https://wa.me/526141777711" className="btn btn-light footer-btn">Cotiza por WhatsApp</a>
+          <p>
+            Instagram: <a href="https://instagram.com/casapietramx" target="_blank" rel="noreferrer">@casapietramx</a>
+          </p>
+          <a href="https://wa.me/526141777711" className="btn btn-light footer-btn">Hablar por WhatsApp</a>
         </div>
       </div>
-      <div className="container footer-copy">© {new Date().getFullYear()} Casa Pietra. Todos los derechos reservados.</div>
+      <div className="container footer-copy">
+        <span>© {new Date().getFullYear()} Casa Pietra. Todos los derechos reservados.</span>
+        <a href="/admin" className="footer-admin-link">Acceso admin</a>
+      </div>
     </footer>
   );
 }

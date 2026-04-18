@@ -103,7 +103,16 @@ function ServicesSection() {
   return (
     <section className="section muted-section">
       <div className="container">
-        <SectionHeading eyebrow="Servicios" title="Soluciones completas para proyectos residenciales y comerciales" />
+        <SectionHeading
+          eyebrow="Servicios"
+          centered
+          title={
+            <>
+              <span className="section-title-main">Soluciones completas</span>
+              <span className="section-title-subline">para proyectos residenciales y comerciales</span>
+            </>
+          }
+        />
         <div className="grid cards-3">
           {services.map(({ title, text, icon }) => (
             <article key={title} className="service-card reveal">

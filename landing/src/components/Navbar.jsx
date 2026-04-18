@@ -28,7 +28,8 @@ function Navbar() {
 
         <div className="nav-actions">
           <CTAButton href="https://wa.me/526141777711" className="desktop-cta">
-            Cotiza por WhatsApp
+            <span className="cta-label-full">Hablar por WhatsApp</span>
+            <span className="cta-label-short">WhatsApp</span>
           </CTAButton>
 
           <button
@@ -53,7 +54,7 @@ function Navbar() {
           </a>
         ))}
         <CTAButton href="https://wa.me/526141777711" className="mobile-cta">
-          Cotiza por WhatsApp
+          Hablar por WhatsApp
         </CTAButton>
       </nav>
     </header>

@@ -26,7 +26,12 @@ function ValueSection() {
       <div className="container">
         <SectionHeading
           eyebrow="Nuestra propuesta"
-          title="Más que una cubierta: una pieza que define el espacio"
+          title={
+            <>
+              <span className="section-title-main">Más que una cubierta</span>
+              <span className="section-title-subline">una pieza que define el espacio</span>
+            </>
+          }
           subtitle="Combinamos dirección estética, criterio técnico y ejecución precisa para elevar el resultado final."
           centered
         />

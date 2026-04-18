@@ -1,0 +1,146 @@
+[
+  {
+    "id": "b1d31380-6436-4127-bd53-ece80c858e7f",
+    "title": "Cocina Cuellar",
+    "material": "Granito",
+    "zone": "Chihuahua Centro",
+    "imageUrl": "/uploads/1776542357998-d8fc78b3-6a60-4a50-880e-8d9ec88e7d41.jpg",
+    "createdAt": "2026-04-18T19:59:18.008Z",
+    "updatedAt": "2026-04-18T19:59:18.008Z"
+  },
+  {
+    "id": "seed-1",
+    "title": "Cocina de autor",
+    "material": "Cuarzo",
+    "zone": "Chihuahua Norte",
+    "imageUrl": "/placeholders/project-1.svg",
+    "createdAt": "2026-01-01T12:00:00.000Z",
+    "updatedAt": "2026-01-01T12:00:00.000Z"
+  },
+  {
+    "id": "seed-2",
+    "title": "Baño en suite",
+    "material": "Mármol",
+    "zone": "Distrito Uno",
+    "imageUrl": "/placeholders/project-2.svg",
+    "createdAt": "2026-01-01T12:01:00.000Z",
+    "updatedAt": "2026-01-01T12:01:00.000Z"
+  },
+  {
+    "id": "seed-3",
+    "title": "Isla escultural",
+    "material": "Granito",
+    "zone": "Campestre",
+    "imageUrl": "/placeholders/project-3.svg",
+    "createdAt": "2026-01-01T12:02:00.000Z",
+    "updatedAt": "2026-01-01T12:02:00.000Z"
+  },
+  {
+    "id": "seed-4",
+    "title": "Barra social",
+    "material": "Cuarzo",
+    "zone": "San Felipe",
+    "imageUrl": "/placeholders/project-2.svg",
+    "createdAt": "2026-01-01T12:03:00.000Z",
+    "updatedAt": "2026-01-01T12:03:00.000Z"
+  },
+  {
+    "id": "seed-5",
+    "title": "Recibidor residencial",
+    "material": "Mármol",
+    "zone": "Reliz",
+    "imageUrl": "/placeholders/project-1.svg",
+    "createdAt": "2026-01-01T12:04:00.000Z",
+    "updatedAt": "2026-01-01T12:04:00.000Z"
+  },
+  {
+    "id": "seed-6",
+    "title": "Cocina familiar",
+    "material": "Granito",
+    "zone": "Cantera",
+    "imageUrl": "/placeholders/project-3.svg",
+    "createdAt": "2026-01-01T12:05:00.000Z",
+    "updatedAt": "2026-01-01T12:05:00.000Z"
+  },
+  {
+    "id": "seed-7",
+    "title": "Vanity principal",
+    "material": "Cuarzo",
+    "zone": "Quintas del Sol",
+    "imageUrl": "/placeholders/project-1.svg",
+    "createdAt": "2026-01-01T12:06:00.000Z",
+    "updatedAt": "2026-01-01T12:06:00.000Z"
+  },
+  {
+    "id": "seed-8",
+    "title": "Área lounge",
+    "material": "Mármol",
+    "zone": "Zona Centro",
+    "imageUrl": "/placeholders/project-2.svg",
+    "createdAt": "2026-01-01T12:07:00.000Z",
+    "updatedAt": "2026-01-01T12:07:00.000Z"
+  },
+  {
+    "id": "seed-9",
+    "title": "Baño de visitas",
+    "material": "Granito",
+    "zone": "Arboledas",
+    "imageUrl": "/placeholders/project-3.svg",
+    "createdAt": "2026-01-01T12:08:00.000Z",
+    "updatedAt": "2026-01-01T12:08:00.000Z"
+  },
+  {
+    "id": "seed-10",
+    "title": "Cocina premium",
+    "material": "Cuarzo",
+    "zone": "Bosques del Valle",
+    "imageUrl": "/placeholders/project-2.svg",
+    "createdAt": "2026-01-01T12:09:00.000Z",
+    "updatedAt": "2026-01-01T12:09:00.000Z"
+  },
+  {
+    "id": "seed-11",
+    "title": "Comedor integrado",
+    "material": "Mármol",
+    "zone": "Valle Escondido",
+    "imageUrl": "/placeholders/project-1.svg",
+    "createdAt": "2026-01-01T12:10:00.000Z",
+    "updatedAt": "2026-01-01T12:10:00.000Z"
+  },
+  {
+    "id": "seed-12",
+    "title": "Isla monolítica",
+    "material": "Granito",
+    "zone": "Presa Rejón",
+    "imageUrl": "/placeholders/project-3.svg",
+    "createdAt": "2026-01-01T12:11:00.000Z",
+    "updatedAt": "2026-01-01T12:11:00.000Z"
+  },
+  {
+    "id": "seed-13",
+    "title": "Barra desayunador",
+    "material": "Cuarzo",
+    "zone": "El Saucito",
+    "imageUrl": "/placeholders/project-2.svg",
+    "createdAt": "2026-01-01T12:12:00.000Z",
+    "updatedAt": "2026-01-01T12:12:00.000Z"
+  },
+  {
+    "id": "seed-14",
+    "title": "Lobby comercial",
+    "material": "Granito",
+    "zone": "Distrito 1",
+    "imageUrl": "/placeholders/project-1.svg",
+    "createdAt": "2026-01-01T12:13:00.000Z",
+    "updatedAt": "2026-01-01T12:13:00.000Z"
+  },
+  {
+    "id": "seed-15",
+    "title": "Baño master",
+    "material": "Mármol",
+    "zone": "Puerta de Hierro",
+    "imageUrl": "/placeholders/project-3.svg",
+    "createdAt": "2026-01-01T12:14:00.000Z",
+    "updatedAt": "2026-01-01T12:14:00.000Z"
+  }
+]

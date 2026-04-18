@@ -31,7 +31,12 @@ function MaterialsSection() {
       <div className="container">
         <SectionHeading
           eyebrow="Materiales"
-          title="Materiales que combinan estética, desempeño y valor a largo plazo"
+          title={
+            <>
+              <span className="section-title-main">Materiales que combinan estética y desempeño:</span>
+              <span className="section-title-subline">valor a largo plazo</span>
+            </>
+          }
           subtitle="Seleccionamos mármol, granito y cuarzo según el lenguaje arquitectónico del proyecto, nivel de uso y mantenimiento esperado."
           centered
         />

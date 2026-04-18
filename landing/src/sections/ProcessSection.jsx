@@ -12,7 +12,15 @@ function ProcessSection() {
   return (
     <section className="section muted-section" id="proceso">
       <div className="container">
-        <SectionHeading title="Un proceso claro, preciso y sin improvisaciones" centered />
+        <SectionHeading
+          centered
+          title={
+            <>
+              <span className="section-title-main">Un proceso claro y preciso</span>
+              <span className="section-title-subline">sin improvisaciones</span>
+            </>
+          }
+        />
         <div className="timeline">
           {steps.map(([num, title, text]) => (
             <article key={num} className="timeline-step reveal">

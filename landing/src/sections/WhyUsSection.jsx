@@ -12,7 +12,15 @@ function WhyUsSection() {
   return (
     <section className="section">
       <div className="container">
-        <SectionHeading title="Por qué nuestros clientes nos eligen" centered />
+        <SectionHeading
+          centered
+          title={
+            <>
+              <span className="section-title-main">Por qué nuestros clientes</span>
+              <span className="section-title-subline">nos eligen</span>
+            </>
+          }
+        />
         <div className="grid cards-4">
           {reasons.map(([title, text]) => (
             <article key={title} className="feature-card reveal">

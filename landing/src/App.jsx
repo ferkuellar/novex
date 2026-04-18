@@ -1,6 +1,8 @@
 import React from 'react';
 import Navbar from './components/Navbar';
 import CookieConsentBanner from './components/CookieConsentBanner';
+import BackToTopButton from './components/BackToTopButton';
+import MobileWhatsAppFab from './components/MobileWhatsAppFab';
 import HeroSection from './sections/HeroSection';
 import ValueSection from './sections/ValueSection';
 import MaterialsSection from './sections/MaterialsSection';
@@ -33,6 +35,8 @@ function App() {
       </main>
       <Footer />
       <CookieConsentBanner />
+      <BackToTopButton />
+      <MobileWhatsAppFab />
     </>
   );
 }
