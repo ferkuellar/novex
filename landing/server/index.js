@@ -8,12 +8,14 @@ const multer = require('multer');
 const PORT = Number(process.env.PORT || 8787);
 const ROOT_DIR = path.resolve(__dirname, '..');
 const DATA_DIR = path.join(__dirname, 'data');
+const BACKUPS_DIR = path.join(DATA_DIR, 'backups');
 const UPLOADS_DIR = path.join(__dirname, 'uploads');
 const PROJECTS_FILE = path.join(DATA_DIR, 'projects.json');
 const TESTIMONIALS_FILE = path.join(DATA_DIR, 'testimonials.json');
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'casa-pietra-admin';
 const ADMIN_TOKEN_SECRET = process.env.ADMIN_TOKEN_SECRET || 'novex-admin-secret-change-me';
 const ADMIN_TOKEN_TTL_HOURS = Math.min(Math.max(Number(process.env.ADMIN_TOKEN_TTL_HOURS || 24), 1), 168);
+const MAX_DATA_BACKUPS = 24;
 
 const seededProjects = [
   { id: 'seed-1', title: 'Cocina de autor', material: 'Cuarzo', zone: 'Chihuahua Norte', imageUrl: '/placeholders/project-1.svg' },
@@ -71,53 +73,151 @@ const seededTestimonials = [
 
 function ensureArrayFile(filePath, fallbackItems) {
   if (!fs.existsSync(filePath)) {
-    fs.writeFileSync(filePath, JSON.stringify(fallbackItems, null, 2));
+    writeJsonArrayAtomic(filePath, fallbackItems);
     return;
   }
 
   try {
     const parsed = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-    if (!Array.isArray(parsed)) {
-      fs.writeFileSync(filePath, JSON.stringify(fallbackItems, null, 2));
-    }
+    if (Array.isArray(parsed)) return;
   } catch (error) {
-    fs.writeFileSync(filePath, JSON.stringify(fallbackItems, null, 2));
+    const recovered = recoverArrayFromBackup(filePath);
+    if (Array.isArray(recovered)) {
+      writeJsonArrayAtomic(filePath, recovered);
+      return;
+    }
   }
+
+  quarantineCorruptFile(filePath);
+  writeJsonArrayAtomic(filePath, fallbackItems);
 }
 
 function ensureStorage() {
   if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
+  if (!fs.existsSync(BACKUPS_DIR)) fs.mkdirSync(BACKUPS_DIR, { recursive: true });
   if (!fs.existsSync(UPLOADS_DIR)) fs.mkdirSync(UPLOADS_DIR, { recursive: true });
   ensureArrayFile(PROJECTS_FILE, seededProjects);
   ensureArrayFile(TESTIMONIALS_FILE, seededTestimonials);
 }
 
-function readProjects() {
+function getFileBasename(filePath) {
+  return path.basename(filePath, path.extname(filePath));
+}
+
+function makeTimestampForFile() {
+  return new Date().toISOString().replace(/[:.]/g, '-');
+}
+
+function listBackupsFor(baseName) {
   try {
-    const raw = fs.readFileSync(PROJECTS_FILE, 'utf8');
-    const projects = JSON.parse(raw);
-    return Array.isArray(projects) ? projects : [];
+    const prefix = `${baseName}-`;
+    const suffix = '.json';
+    return fs
+      .readdirSync(BACKUPS_DIR)
+      .filter((name) => name.startsWith(prefix) && name.endsWith(suffix))
+      .sort();
   } catch (error) {
     return [];
   }
+}
+
+function pruneBackups(baseName) {
+  const backups = listBackupsFor(baseName);
+  if (backups.length <= MAX_DATA_BACKUPS) return;
+  const extra = backups.slice(0, backups.length - MAX_DATA_BACKUPS);
+
+  extra.forEach((fileName) => {
+    try {
+      fs.unlinkSync(path.join(BACKUPS_DIR, fileName));
+    } catch (error) {
+      // ignore cleanup failures
+    }
+  });
+}
+
+function backupCurrentFile(filePath) {
+  if (!fs.existsSync(filePath)) return;
+
+  const stat = fs.statSync(filePath);
+  if (!stat.size) return;
+
+  const baseName = getFileBasename(filePath);
+  const backupName = `${baseName}-${makeTimestampForFile()}.json`;
+  const backupPath = path.join(BACKUPS_DIR, backupName);
+  fs.copyFileSync(filePath, backupPath);
+  pruneBackups(baseName);
+}
+
+function quarantineCorruptFile(filePath) {
+  if (!fs.existsSync(filePath)) return;
+  const baseName = path.basename(filePath);
+  const quarantineName = `${baseName}.corrupt-${makeTimestampForFile()}`;
+  const quarantinePath = path.join(BACKUPS_DIR, quarantineName);
+
+  try {
+    fs.renameSync(filePath, quarantinePath);
+  } catch (error) {
+    // ignore quarantine failures
+  }
+}
+
+function recoverArrayFromBackup(filePath) {
+  const baseName = getFileBasename(filePath);
+  const backups = listBackupsFor(baseName);
+  for (let index = backups.length - 1; index >= 0; index -= 1) {
+    try {
+      const fullPath = path.join(BACKUPS_DIR, backups[index]);
+      const raw = fs.readFileSync(fullPath, 'utf8');
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) return parsed;
+    } catch (error) {
+      // try previous backup
+    }
+  }
+  return null;
+}
+
+function writeJsonArrayAtomic(filePath, items) {
+  const payload = JSON.stringify(items, null, 2);
+  const tempPath = `${filePath}.tmp-${process.pid}-${Date.now()}-${Math.round(Math.random() * 1000)}`;
+
+  backupCurrentFile(filePath);
+  fs.writeFileSync(tempPath, payload, 'utf8');
+  fs.renameSync(tempPath, filePath);
+}
+
+function readJsonArraySafe(filePath) {
+  try {
+    const raw = fs.readFileSync(filePath, 'utf8');
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed)) return parsed;
+  } catch (error) {
+    // recover from backup below
+  }
+
+  const recovered = recoverArrayFromBackup(filePath);
+  if (Array.isArray(recovered)) {
+    writeJsonArrayAtomic(filePath, recovered);
+    return recovered;
+  }
+
+  return [];
+}
+
+function readProjects() {
+  return readJsonArraySafe(PROJECTS_FILE);
 }
 
 function writeProjects(projects) {
-  fs.writeFileSync(PROJECTS_FILE, JSON.stringify(projects, null, 2));
+  writeJsonArrayAtomic(PROJECTS_FILE, projects);
 }
 
 function readTestimonials() {
-  try {
-    const raw = fs.readFileSync(TESTIMONIALS_FILE, 'utf8');
-    const testimonials = JSON.parse(raw);
-    return Array.isArray(testimonials) ? testimonials : [];
-  } catch (error) {
-    return [];
-  }
+  return readJsonArraySafe(TESTIMONIALS_FILE);
 }
 
 function writeTestimonials(testimonials) {
-  fs.writeFileSync(TESTIMONIALS_FILE, JSON.stringify(testimonials, null, 2));
+  writeJsonArrayAtomic(TESTIMONIALS_FILE, testimonials);
 }
 
 function parseLimit(value) {

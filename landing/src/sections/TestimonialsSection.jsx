@@ -12,33 +12,9 @@ function resolveApiBase() {
   const directHostHttp = `http://${hostname}:8787`;
   const relativeApi = '';
 
-  return Array.from(new Set([fromEnv, relativeApi, directHostProtocol, directHostHttp].filter(Boolean)));
+  // Prefer direct API host first; relative path can be a false-positive on static hosts.
+  return Array.from(new Set([fromEnv, directHostProtocol, directHostHttp, relativeApi].filter(Boolean)));
 }
-
-const API_BASE_CANDIDATES = resolveApiBase();
-
-const fallbackTestimonials = [
-  { id: 'fallback-t-1', name: 'Laura M.', project: 'Remodelación de cocina', quote: 'El acabado en cuarzo quedó impecable. Cumplieron en tiempo y cuidaron cada detalle de la instalación.' },
-  { id: 'fallback-t-2', name: 'Arq. Rodrigo S.', project: 'Proyecto residencial', quote: 'Nos apoyaron desde la selección del material hasta la entrega final. Trabajo serio y bien ejecutado.' },
-  { id: 'fallback-t-3', name: 'Daniela P.', project: 'Baño principal', quote: 'La atención fue clara y profesional. El resultado se integró perfecto con el diseño interior que buscábamos.' },
-  { id: 'fallback-t-4', name: 'Mónica R.', project: 'Cocina integral', quote: 'Desde la primera visita nos explicaron todo con claridad. El resultado superó por mucho lo que imaginábamos.' },
-  { id: 'fallback-t-5', name: 'Ing. Javier C.', project: 'Casa nueva', quote: 'Gran nivel de detalle en cortes, cantos y uniones. Se nota el cuidado en cada fase del proceso.' },
-  { id: 'fallback-t-6', name: 'Sofía L.', project: 'Isla y barra social', quote: 'La propuesta de material fue exacta para nuestro estilo. Instalación limpia y muy bien coordinada.' },
-  { id: 'fallback-t-7', name: 'Carlos T.', project: 'Remodelación completa', quote: 'Cumplieron tiempos y cuidaron la obra. La cubierta quedó impecable y elevó todo el espacio.' },
-  { id: 'fallback-t-8', name: 'Mariana G.', project: 'Proyecto comercial', quote: 'Nos ayudaron a balancear imagen y funcionalidad. Excelente comunicación durante todo el proyecto.' },
-  { id: 'fallback-t-9', name: 'Arq. Fernanda P.', project: 'Interiorismo residencial', quote: 'Su ejecución respeta por completo la intención de diseño. Equipo profesional y puntual.' },
-  { id: 'fallback-t-10', name: 'Luis A.', project: 'Cocina campestre', quote: 'Muy buena asesoría para elegir entre granito y cuarzo. El acabado final luce premium.' },
-  { id: 'fallback-t-11', name: 'Patricia V.', project: 'Baño y tocador', quote: 'Atención cercana y respuesta rápida. El resultado se integró perfecto con nuestro mobiliario.' },
-  { id: 'fallback-t-12', name: 'Eduardo N.', project: 'Departamento nuevo', quote: 'Trabajo serio, ordenado y con gran presentación. Recomendables para proyectos exigentes.' },
-  { id: 'fallback-t-13', name: 'Claudia H.', project: 'Renovación de cocina', quote: 'La diferencia está en los detalles. Se ve elegante, sólido y de alta calidad.' },
-  { id: 'fallback-t-14', name: 'Arq. Iván D.', project: 'Desarrollo residencial', quote: 'Coordinación excelente con obra y entregas puntuales. Muy buen estándar de instalación.' },
-  { id: 'fallback-t-15', name: 'Gabriela S.', project: 'Proyecto familiar', quote: 'Recibimos acompañamiento de principio a fin. Quedamos felices con el material y la terminación.' },
-  { id: 'fallback-t-16', name: 'Renata M.', project: 'Cocina contemporánea', quote: 'Nos orientaron muy bien para elegir el acabado. El resultado final se ve limpio, elegante y funcional.' },
-  { id: 'fallback-t-17', name: 'Miguel Á.', project: 'Barra para terraza', quote: 'Excelente ejecución en cortes y cantos. La pieza quedó firme, bien nivelada y lista para uso diario.' },
-  { id: 'fallback-t-18', name: 'Arq. Paola R.', project: 'Remodelación integral', quote: 'Aportaron soluciones prácticas durante obra y cuidaron tiempos. La instalación fue ordenada y profesional.' },
-  { id: 'fallback-t-19', name: 'Héctor B.', project: 'Recepción comercial', quote: 'Necesitábamos una imagen sobria y resistente. Cumplieron con calidad, detalle y muy buena comunicación.' },
-  { id: 'fallback-t-20', name: 'Valeria C.', project: 'Baño secundario', quote: 'El equipo llegó puntual, trabajó con cuidado y dejó todo limpio. Quedamos muy satisfechos con el acabado.' },
-];
 
 function normalizeTestimonial(item, index) {
   return {
@@ -46,11 +22,14 @@ function normalizeTestimonial(item, index) {
     name: item.name || 'Cliente',
     project: item.project || 'Proyecto residencial',
     quote: item.quote || '',
+    createdAt: item.createdAt || '',
   };
 }
 
 function TestimonialsSection() {
-  const [testimonials, setTestimonials] = useState(fallbackTestimonials);
+  const [testimonials, setTestimonials] = useState([]);
+  const [loadingTestimonials, setLoadingTestimonials] = useState(true);
+  const [testimonialsError, setTestimonialsError] = useState('');
   const [visibleCount, setVisibleCount] = useState(4);
   const [slideIndex, setSlideIndex] = useState(1);
   const [transitionEnabled, setTransitionEnabled] = useState(true);
@@ -87,20 +66,40 @@ function TestimonialsSection() {
     let cancelled = false;
 
     const loadTestimonials = async () => {
+      const apiBaseCandidates = resolveApiBase();
       let loaded = false;
 
-      for (const base of API_BASE_CANDIDATES) {
+      for (const base of apiBaseCandidates) {
         try {
-          const response = await fetch(`${base}/api/testimonials?ts=${Date.now()}`, { cache: 'no-store' });
+          const response = await fetch(`${base}/api/testimonials?ts=${Date.now()}`, {
+            cache: 'no-store',
+            headers: {
+              'Cache-Control': 'no-cache',
+            },
+          });
           if (!response.ok) continue;
 
-          const data = await response.json();
-          const items = Array.isArray(data.items)
-            ? data.items.map((item, index) => normalizeTestimonial(item, index))
-            : [];
+          const contentType = String(response.headers.get('content-type') || '').toLowerCase();
+          if (!contentType.includes('application/json')) continue;
+
+          const data = await response.json().catch(() => null);
+          if (!data || !Array.isArray(data.items)) continue;
+
+          const items = data.items;
+          const normalizedItems = items
+            .map((item, index) => normalizeTestimonial(item, index))
+            .filter((item) => item.quote)
+            .sort((a, b) => {
+              const aTs = Date.parse(String(a.createdAt || ''));
+              const bTs = Date.parse(String(b.createdAt || ''));
+              if (Number.isFinite(aTs) && Number.isFinite(bTs) && aTs !== bTs) return bTs - aTs;
+              return String(b.id || '').localeCompare(String(a.id || ''));
+            });
 
           if (!cancelled) {
-            setTestimonials(items.length ? items : fallbackTestimonials);
+            setTestimonials(normalizedItems);
+            setTestimonialsError('');
+            setLoadingTestimonials(false);
           }
           loaded = true;
           break;
@@ -110,7 +109,9 @@ function TestimonialsSection() {
       }
 
       if (!loaded && !cancelled) {
-        setTestimonials(fallbackTestimonials);
+        setTestimonials([]);
+        setLoadingTestimonials(false);
+        setTestimonialsError('No se pudieron cargar las experiencias.');
       }
     };
 
@@ -150,7 +151,7 @@ function TestimonialsSection() {
   useEffect(() => {
     setTransitionEnabled(false);
     setSlideIndex(1);
-  }, [visibleCount]);
+  }, [visibleCount, testimonials.length]);
 
   useEffect(() => {
     if (paused || totalPages <= 1) return undefined;
@@ -201,6 +202,11 @@ function TestimonialsSection() {
           onMouseEnter={() => setPaused(true)}
           onMouseLeave={() => setPaused(false)}
         >
+          {loadingTestimonials ? <p className="carousel-status">Cargando experiencias...</p> : null}
+          {!loadingTestimonials && testimonialsError ? <p className="carousel-status">{testimonialsError}</p> : null}
+          {!loadingTestimonials && !testimonialsError && testimonials.length === 0 ? (
+            <p className="carousel-status">Aún no hay experiencias publicadas.</p>
+          ) : null}
           <div className="testimonials-viewport">
             <div
               className="testimonials-track"
@@ -230,6 +236,7 @@ function TestimonialsSection() {
                 type="button"
                 className="carousel-arrow"
                 aria-label="Testimonio anterior"
+                disabled={totalPages <= 1}
                 onClick={() => {
                   setTransitionEnabled(true);
                   setSlideIndex((prev) => prev - 1);
@@ -241,6 +248,7 @@ function TestimonialsSection() {
                 type="button"
                 className="carousel-arrow"
                 aria-label="Siguiente testimonio"
+                disabled={totalPages <= 1}
                 onClick={() => {
                   setTransitionEnabled(true);
                   setSlideIndex((prev) => prev + 1);

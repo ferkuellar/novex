@@ -4,3 +4,5 @@ node_modules
 .DS_Store
 server/uploads/*
 !server/uploads/.gitkeep
+server/data/backups/*
+!server/data/backups/.gitkeep
