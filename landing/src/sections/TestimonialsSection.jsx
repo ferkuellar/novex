@@ -1,44 +1,135 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import SectionHeading from '../components/SectionHeading';
 
-const testimonials = [
-  ['Laura M.', 'Remodelación de cocina', 'El acabado en cuarzo quedó impecable. Cumplieron en tiempo y cuidaron cada detalle de la instalación.'],
-  ['Arq. Rodrigo S.', 'Proyecto residencial', 'Nos apoyaron desde la selección del material hasta la entrega final. Trabajo serio y bien ejecutado.'],
-  ['Daniela P.', 'Baño principal', 'La atención fue clara y profesional. El resultado se integró perfecto con el diseño interior que buscábamos.'],
-  ['Mónica R.', 'Cocina integral', 'Desde la primera visita nos explicaron todo con claridad. El resultado superó por mucho lo que imaginábamos.'],
-  ['Ing. Javier C.', 'Casa nueva', 'Gran nivel de detalle en cortes, cantos y uniones. Se nota el cuidado en cada fase del proceso.'],
-  ['Sofía L.', 'Isla y barra social', 'La propuesta de material fue exacta para nuestro estilo. Instalación limpia y muy bien coordinada.'],
-  ['Carlos T.', 'Remodelación completa', 'Cumplieron tiempos y cuidaron la obra. La cubierta quedó impecable y elevó todo el espacio.'],
-  ['Mariana G.', 'Proyecto comercial', 'Nos ayudaron a balancear imagen y funcionalidad. Excelente comunicación durante todo el proyecto.'],
-  ['Arq. Fernanda P.', 'Interiorismo residencial', 'Su ejecución respeta por completo la intención de diseño. Equipo profesional y puntual.'],
-  ['Luis A.', 'Cocina campestre', 'Muy buena asesoría para elegir entre granito y cuarzo. El acabado final luce premium.'],
-  ['Patricia V.', 'Baño y tocador', 'Atención cercana y respuesta rápida. El resultado se integró perfecto con nuestro mobiliario.'],
-  ['Eduardo N.', 'Departamento nuevo', 'Trabajo serio, ordenado y con gran presentación. Recomendables para proyectos exigentes.'],
-  ['Claudia H.', 'Renovación de cocina', 'La diferencia está en los detalles. Se ve elegante, sólido y de alta calidad.'],
-  ['Arq. Iván D.', 'Desarrollo residencial', 'Coordinación excelente con obra y entregas puntuales. Muy buen estándar de instalación.'],
-  ['Gabriela S.', 'Proyecto familiar', 'Recibimos acompañamiento de principio a fin. Quedamos felices con el material y la terminación.'],
-  ['Renata M.', 'Cocina contemporánea', 'Nos orientaron muy bien para elegir el acabado. El resultado final se ve limpio, elegante y funcional.'],
-  ['Miguel Á.', 'Barra para terraza', 'Excelente ejecución en cortes y cantos. La pieza quedó firme, bien nivelada y lista para uso diario.'],
-  ['Arq. Paola R.', 'Remodelación integral', 'Aportaron soluciones prácticas durante obra y cuidaron tiempos. La instalación fue ordenada y profesional.'],
-  ['Héctor B.', 'Recepción comercial', 'Necesitábamos una imagen sobria y resistente. Cumplieron con calidad, detalle y muy buena comunicación.'],
-  ['Valeria C.', 'Baño secundario', 'El equipo llegó puntual, trabajó con cuidado y dejó todo limpio. Quedamos muy satisfechos con el acabado.'],
+function resolveApiBase() {
+  const fromEnv = (import.meta.env.VITE_API_BASE || '').replace(/\/$/, '');
+  if (typeof window === 'undefined') {
+    return fromEnv ? [fromEnv] : [''];
+  }
+
+  const { protocol, hostname } = window.location;
+  const directHostProtocol = `${protocol}//${hostname}:8787`;
+  const directHostHttp = `http://${hostname}:8787`;
+  const relativeApi = '';
+
+  return Array.from(new Set([fromEnv, relativeApi, directHostProtocol, directHostHttp].filter(Boolean)));
+}
+
+const API_BASE_CANDIDATES = resolveApiBase();
+
+const fallbackTestimonials = [
+  { id: 'fallback-t-1', name: 'Laura M.', project: 'Remodelación de cocina', quote: 'El acabado en cuarzo quedó impecable. Cumplieron en tiempo y cuidaron cada detalle de la instalación.' },
+  { id: 'fallback-t-2', name: 'Arq. Rodrigo S.', project: 'Proyecto residencial', quote: 'Nos apoyaron desde la selección del material hasta la entrega final. Trabajo serio y bien ejecutado.' },
+  { id: 'fallback-t-3', name: 'Daniela P.', project: 'Baño principal', quote: 'La atención fue clara y profesional. El resultado se integró perfecto con el diseño interior que buscábamos.' },
+  { id: 'fallback-t-4', name: 'Mónica R.', project: 'Cocina integral', quote: 'Desde la primera visita nos explicaron todo con claridad. El resultado superó por mucho lo que imaginábamos.' },
+  { id: 'fallback-t-5', name: 'Ing. Javier C.', project: 'Casa nueva', quote: 'Gran nivel de detalle en cortes, cantos y uniones. Se nota el cuidado en cada fase del proceso.' },
+  { id: 'fallback-t-6', name: 'Sofía L.', project: 'Isla y barra social', quote: 'La propuesta de material fue exacta para nuestro estilo. Instalación limpia y muy bien coordinada.' },
+  { id: 'fallback-t-7', name: 'Carlos T.', project: 'Remodelación completa', quote: 'Cumplieron tiempos y cuidaron la obra. La cubierta quedó impecable y elevó todo el espacio.' },
+  { id: 'fallback-t-8', name: 'Mariana G.', project: 'Proyecto comercial', quote: 'Nos ayudaron a balancear imagen y funcionalidad. Excelente comunicación durante todo el proyecto.' },
+  { id: 'fallback-t-9', name: 'Arq. Fernanda P.', project: 'Interiorismo residencial', quote: 'Su ejecución respeta por completo la intención de diseño. Equipo profesional y puntual.' },
+  { id: 'fallback-t-10', name: 'Luis A.', project: 'Cocina campestre', quote: 'Muy buena asesoría para elegir entre granito y cuarzo. El acabado final luce premium.' },
+  { id: 'fallback-t-11', name: 'Patricia V.', project: 'Baño y tocador', quote: 'Atención cercana y respuesta rápida. El resultado se integró perfecto con nuestro mobiliario.' },
+  { id: 'fallback-t-12', name: 'Eduardo N.', project: 'Departamento nuevo', quote: 'Trabajo serio, ordenado y con gran presentación. Recomendables para proyectos exigentes.' },
+  { id: 'fallback-t-13', name: 'Claudia H.', project: 'Renovación de cocina', quote: 'La diferencia está en los detalles. Se ve elegante, sólido y de alta calidad.' },
+  { id: 'fallback-t-14', name: 'Arq. Iván D.', project: 'Desarrollo residencial', quote: 'Coordinación excelente con obra y entregas puntuales. Muy buen estándar de instalación.' },
+  { id: 'fallback-t-15', name: 'Gabriela S.', project: 'Proyecto familiar', quote: 'Recibimos acompañamiento de principio a fin. Quedamos felices con el material y la terminación.' },
+  { id: 'fallback-t-16', name: 'Renata M.', project: 'Cocina contemporánea', quote: 'Nos orientaron muy bien para elegir el acabado. El resultado final se ve limpio, elegante y funcional.' },
+  { id: 'fallback-t-17', name: 'Miguel Á.', project: 'Barra para terraza', quote: 'Excelente ejecución en cortes y cantos. La pieza quedó firme, bien nivelada y lista para uso diario.' },
+  { id: 'fallback-t-18', name: 'Arq. Paola R.', project: 'Remodelación integral', quote: 'Aportaron soluciones prácticas durante obra y cuidaron tiempos. La instalación fue ordenada y profesional.' },
+  { id: 'fallback-t-19', name: 'Héctor B.', project: 'Recepción comercial', quote: 'Necesitábamos una imagen sobria y resistente. Cumplieron con calidad, detalle y muy buena comunicación.' },
+  { id: 'fallback-t-20', name: 'Valeria C.', project: 'Baño secundario', quote: 'El equipo llegó puntual, trabajó con cuidado y dejó todo limpio. Quedamos muy satisfechos con el acabado.' },
 ];
 
+function normalizeTestimonial(item, index) {
+  return {
+    id: item.id || `testimonial-${index}`,
+    name: item.name || 'Cliente',
+    project: item.project || 'Proyecto residencial',
+    quote: item.quote || '',
+  };
+}
+
 function TestimonialsSection() {
-  const total = testimonials.length;
+  const [testimonials, setTestimonials] = useState(fallbackTestimonials);
   const [visibleCount, setVisibleCount] = useState(4);
-  const [activePage, setActivePage] = useState(0);
+  const [slideIndex, setSlideIndex] = useState(1);
+  const [transitionEnabled, setTransitionEnabled] = useState(true);
   const [paused, setPaused] = useState(false);
-  const pages = [];
-  for (let i = 0; i < total; i += visibleCount) {
-    pages.push(testimonials.slice(i, i + visibleCount));
-  }
+  const pages = useMemo(() => {
+    const grouped = [];
+    for (let i = 0; i < testimonials.length; i += visibleCount) {
+      grouped.push(testimonials.slice(i, i + visibleCount));
+    }
+    return grouped;
+  }, [visibleCount]);
   const totalPages = pages.length;
 
+  const activePage = useMemo(() => {
+    if (!totalPages) return 0;
+    if (slideIndex === 0) return totalPages - 1;
+    if (slideIndex === totalPages + 1) return 0;
+    return slideIndex - 1;
+  }, [slideIndex, totalPages]);
+
+  const infinitePages = useMemo(() => {
+    if (!totalPages) return [];
+    return [pages[totalPages - 1], ...pages, pages[0]];
+  }, [pages, totalPages]);
+
   const goTo = (index) => {
-    const next = (index + totalPages) % totalPages;
-    setActivePage(next);
+    if (!totalPages) return;
+    const normalized = (index + totalPages) % totalPages;
+    setTransitionEnabled(true);
+    setSlideIndex(normalized + 1);
   };
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadTestimonials = async () => {
+      let loaded = false;
+
+      for (const base of API_BASE_CANDIDATES) {
+        try {
+          const response = await fetch(`${base}/api/testimonials?ts=${Date.now()}`, { cache: 'no-store' });
+          if (!response.ok) continue;
+
+          const data = await response.json();
+          const items = Array.isArray(data.items)
+            ? data.items.map((item, index) => normalizeTestimonial(item, index))
+            : [];
+
+          if (!cancelled) {
+            setTestimonials(items.length ? items : fallbackTestimonials);
+          }
+          loaded = true;
+          break;
+        } catch (error) {
+          // try next base
+        }
+      }
+
+      if (!loaded && !cancelled) {
+        setTestimonials(fallbackTestimonials);
+      }
+    };
+
+    loadTestimonials();
+    const refreshInterval = window.setInterval(loadTestimonials, 15000);
+    const onFocus = () => loadTestimonials();
+    const onVisibility = () => {
+      if (document.visibilityState === 'visible') loadTestimonials();
+    };
+    window.addEventListener('focus', onFocus);
+    document.addEventListener('visibilitychange', onVisibility);
+
+    return () => {
+      cancelled = true;
+      window.clearInterval(refreshInterval);
+      window.removeEventListener('focus', onFocus);
+      document.removeEventListener('visibilitychange', onVisibility);
+    };
+  }, []);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(max-width: 759px)');
@@ -57,18 +148,40 @@ function TestimonialsSection() {
   }, []);
 
   useEffect(() => {
-    if (activePage >= totalPages) {
-      setActivePage(Math.max(0, totalPages - 1));
-    }
-  }, [activePage, totalPages]);
+    setTransitionEnabled(false);
+    setSlideIndex(1);
+  }, [visibleCount]);
 
   useEffect(() => {
-    if (paused) return undefined;
+    if (paused || totalPages <= 1) return undefined;
     const interval = setInterval(() => {
-      setActivePage((prev) => (prev + 1) % totalPages);
-    }, 6500);
+      setTransitionEnabled(true);
+      setSlideIndex((prev) => prev + 1);
+    }, 5200);
     return () => clearInterval(interval);
   }, [paused, totalPages]);
+
+  const handleTransitionEnd = () => {
+    if (!totalPages) return;
+    if (slideIndex === 0) {
+      setTransitionEnabled(false);
+      setSlideIndex(totalPages);
+      return;
+    }
+
+    if (slideIndex === totalPages + 1) {
+      setTransitionEnabled(false);
+      setSlideIndex(1);
+    }
+  };
+
+  useEffect(() => {
+    if (transitionEnabled) return;
+    const frame = window.requestAnimationFrame(() => {
+      setTransitionEnabled(true);
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [transitionEnabled]);
 
   return (
     <section className="section muted-section">
@@ -91,15 +204,19 @@ function TestimonialsSection() {
           <div className="testimonials-viewport">
             <div
               className="testimonials-track"
-              style={{ transform: `translateX(-${activePage * 100}%)` }}
+              style={{
+                transform: `translateX(-${slideIndex * 100}%)`,
+                transition: transitionEnabled ? undefined : 'none',
+              }}
+              onTransitionEnd={handleTransitionEnd}
             >
-              {pages.map((page, pageIndex) => (
-                <div key={`page-${pageIndex}`} className="carousel-page">
-                  {page.map(([name, project, quote]) => (
-                    <article key={name + project} className="testimonial-card carousel-card">
-                      <p>“{quote}”</p>
-                      <h3>{name}</h3>
-                      <small>{project}</small>
+              {infinitePages.map((page, pageIndex) => (
+                <div key={`page-${pageIndex}-${page[0]?.id || 'empty'}`} className="carousel-page">
+                  {page.map((item) => (
+                    <article key={item.id} className="testimonial-card carousel-card">
+                      <p>“{item.quote}”</p>
+                      <h3>{item.name}</h3>
+                      <small>{item.project}</small>
                     </article>
                   ))}
                 </div>
@@ -113,7 +230,10 @@ function TestimonialsSection() {
                 type="button"
                 className="carousel-arrow"
                 aria-label="Testimonio anterior"
-                onClick={() => goTo(activePage - 1)}
+                onClick={() => {
+                  setTransitionEnabled(true);
+                  setSlideIndex((prev) => prev - 1);
+                }}
               >
                 ←
               </button>
@@ -121,7 +241,10 @@ function TestimonialsSection() {
                 type="button"
                 className="carousel-arrow"
                 aria-label="Siguiente testimonio"
-                onClick={() => goTo(activePage + 1)}
+                onClick={() => {
+                  setTransitionEnabled(true);
+                  setSlideIndex((prev) => prev + 1);
+                }}
               >
                 →
               </button>

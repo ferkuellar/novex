@@ -1,0 +1,170 @@
+[
+  {
+    "id": "155816a2-1047-47fc-9533-363f2d61ffd6",
+    "name": "Fernando C.",
+    "project": "Isla Central",
+    "quote": "Excelente servicio de instalación de mármol. Fueron puntuales, limpios y muy cuidadosos en los acabados. El trabajo quedó elegante, bien nivelado y con gran calidad. Totalmente recomendados.",
+    "createdAt": "2026-04-18T21:38:24.409Z",
+    "updatedAt": "2026-04-18T21:38:24.409Z"
+  },
+  {
+    "id": "seed-testimonial-1",
+    "name": "Laura M.",
+    "project": "Remodelación de cocina",
+    "quote": "El acabado en cuarzo quedó impecable. Cumplieron en tiempo y cuidaron cada detalle de la instalación.",
+    "createdAt": "2026-01-02T12:00:00.000Z",
+    "updatedAt": "2026-01-02T12:00:00.000Z"
+  },
+  {
+    "id": "seed-testimonial-2",
+    "name": "Arq. Rodrigo S.",
+    "project": "Proyecto residencial",
+    "quote": "Nos apoyaron desde la selección del material hasta la entrega final. Trabajo serio y bien ejecutado.",
+    "createdAt": "2026-01-02T12:01:00.000Z",
+    "updatedAt": "2026-01-02T12:01:00.000Z"
+  },
+  {
+    "id": "seed-testimonial-3",
+    "name": "Daniela P.",
+    "project": "Baño principal",
+    "quote": "La atención fue clara y profesional. El resultado se integró perfecto con el diseño interior que buscábamos.",
+    "createdAt": "2026-01-02T12:02:00.000Z",
+    "updatedAt": "2026-01-02T12:02:00.000Z"
+  },
+  {
+    "id": "seed-testimonial-4",
+    "name": "Mónica R.",
+    "project": "Cocina integral",
+    "quote": "Desde la primera visita nos explicaron todo con claridad. El resultado superó por mucho lo que imaginábamos.",
+    "createdAt": "2026-01-02T12:03:00.000Z",
+    "updatedAt": "2026-01-02T12:03:00.000Z"
+  },
+  {
+    "id": "seed-testimonial-5",
+    "name": "Ing. Javier C.",
+    "project": "Casa nueva",
+    "quote": "Gran nivel de detalle en cortes, cantos y uniones. Se nota el cuidado en cada fase del proceso.",
+    "createdAt": "2026-01-02T12:04:00.000Z",
+    "updatedAt": "2026-01-02T12:04:00.000Z"
+  },
+  {
+    "id": "seed-testimonial-6",
+    "name": "Sofía L.",
+    "project": "Isla y barra social",
+    "quote": "La propuesta de material fue exacta para nuestro estilo. Instalación limpia y muy bien coordinada.",
+    "createdAt": "2026-01-02T12:05:00.000Z",
+    "updatedAt": "2026-01-02T12:05:00.000Z"
+  },
+  {
+    "id": "seed-testimonial-7",
+    "name": "Carlos T.",
+    "project": "Remodelación completa",
+    "quote": "Cumplieron tiempos y cuidaron la obra. La cubierta quedó impecable y elevó todo el espacio.",
+    "createdAt": "2026-01-02T12:06:00.000Z",
+    "updatedAt": "2026-01-02T12:06:00.000Z"
+  },
+  {
+    "id": "seed-testimonial-8",
+    "name": "Mariana G.",
+    "project": "Proyecto comercial",
+    "quote": "Nos ayudaron a balancear imagen y funcionalidad. Excelente comunicación durante todo el proyecto.",
+    "createdAt": "2026-01-02T12:07:00.000Z",
+    "updatedAt": "2026-01-02T12:07:00.000Z"
+  },
+  {
+    "id": "seed-testimonial-9",
+    "name": "Arq. Fernanda P.",
+    "project": "Interiorismo residencial",
+    "quote": "Su ejecución respeta por completo la intención de diseño. Equipo profesional y puntual.",
+    "createdAt": "2026-01-02T12:08:00.000Z",
+    "updatedAt": "2026-01-02T12:08:00.000Z"
+  },
+  {
+    "id": "seed-testimonial-10",
+    "name": "Luis A.",
+    "project": "Cocina campestre",
+    "quote": "Muy buena asesoría para elegir entre granito y cuarzo. El acabado final luce premium.",
+    "createdAt": "2026-01-02T12:09:00.000Z",
+    "updatedAt": "2026-01-02T12:09:00.000Z"
+  },
+  {
+    "id": "seed-testimonial-11",
+    "name": "Patricia V.",
+    "project": "Baño y tocador",
+    "quote": "Atención cercana y respuesta rápida. El resultado se integró perfecto con nuestro mobiliario.",
+    "createdAt": "2026-01-02T12:10:00.000Z",
+    "updatedAt": "2026-01-02T12:10:00.000Z"
+  },
+  {
+    "id": "seed-testimonial-12",
+    "name": "Eduardo N.",
+    "project": "Departamento nuevo",
+    "quote": "Trabajo serio, ordenado y con gran presentación. Recomendables para proyectos exigentes.",
+    "createdAt": "2026-01-02T12:11:00.000Z",
+    "updatedAt": "2026-01-02T12:11:00.000Z"
+  },
+  {
+    "id": "seed-testimonial-13",
+    "name": "Claudia H.",
+    "project": "Renovación de cocina",
+    "quote": "La diferencia está en los detalles. Se ve elegante, sólido y de alta calidad.",
+    "createdAt": "2026-01-02T12:12:00.000Z",
+    "updatedAt": "2026-01-02T12:12:00.000Z"
+  },
+  {
+    "id": "seed-testimonial-14",
+    "name": "Arq. Iván D.",
+    "project": "Desarrollo residencial",
+    "quote": "Coordinación excelente con obra y entregas puntuales. Muy buen estándar de instalación.",
+    "createdAt": "2026-01-02T12:13:00.000Z",
+    "updatedAt": "2026-01-02T12:13:00.000Z"
+  },
+  {
+    "id": "seed-testimonial-15",
+    "name": "Gabriela S.",
+    "project": "Proyecto familiar",
+    "quote": "Recibimos acompañamiento de principio a fin. Quedamos felices con el material y la terminación.",
+    "createdAt": "2026-01-02T12:14:00.000Z",
+    "updatedAt": "2026-01-02T12:14:00.000Z"
+  },
+  {
+    "id": "seed-testimonial-16",
+    "name": "Renata M.",
+    "project": "Cocina contemporánea",
+    "quote": "Nos orientaron muy bien para elegir el acabado. El resultado final se ve limpio, elegante y funcional.",
+    "createdAt": "2026-01-02T12:15:00.000Z",
+    "updatedAt": "2026-01-02T12:15:00.000Z"
+  },
+  {
+    "id": "seed-testimonial-17",
+    "name": "Miguel Á.",
+    "project": "Barra para terraza",
+    "quote": "Excelente ejecución en cortes y cantos. La pieza quedó firme, bien nivelada y lista para uso diario.",
+    "createdAt": "2026-01-02T12:16:00.000Z",
+    "updatedAt": "2026-01-02T12:16:00.000Z"
+  },
+  {
+    "id": "seed-testimonial-18",
+    "name": "Arq. Paola R.",
+    "project": "Remodelación integral",
+    "quote": "Aportaron soluciones prácticas durante obra y cuidaron tiempos. La instalación fue ordenada y profesional.",
+    "createdAt": "2026-01-02T12:17:00.000Z",
+    "updatedAt": "2026-01-02T12:17:00.000Z"
+  },
+  {
+    "id": "seed-testimonial-19",
+    "name": "Héctor B.",
+    "project": "Recepción comercial",
+    "quote": "Necesitábamos una imagen sobria y resistente. Cumplieron con calidad, detalle y muy buena comunicación.",
+    "createdAt": "2026-01-02T12:18:00.000Z",
+    "updatedAt": "2026-01-02T12:18:00.000Z"
+  },
+  {
+    "id": "seed-testimonial-20",
+    "name": "Valeria C.",
+    "project": "Baño secundario",
+    "quote": "El equipo llegó puntual, trabajó con cuidado y dejó todo limpio. Quedamos muy satisfechos con el acabado.",
+    "createdAt": "2026-01-02T12:19:00.000Z",
+    "updatedAt": "2026-01-02T12:19:00.000Z"
+  }
+]

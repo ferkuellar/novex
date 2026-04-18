@@ -10,6 +10,7 @@ const ROOT_DIR = path.resolve(__dirname, '..');
 const DATA_DIR = path.join(__dirname, 'data');
 const UPLOADS_DIR = path.join(__dirname, 'uploads');
 const PROJECTS_FILE = path.join(DATA_DIR, 'projects.json');
+const TESTIMONIALS_FILE = path.join(DATA_DIR, 'testimonials.json');
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'casa-pietra-admin';
 const ADMIN_TOKEN_SECRET = process.env.ADMIN_TOKEN_SECRET || 'novex-admin-secret-change-me';
 const ADMIN_TOKEN_TTL_HOURS = Math.min(Math.max(Number(process.env.ADMIN_TOKEN_TTL_HOURS || 24), 1), 168);
@@ -35,23 +36,60 @@ const seededProjects = [
   return { ...project, createdAt, updatedAt: createdAt };
 });
 
-function ensureStorage() {
-  if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
-  if (!fs.existsSync(UPLOADS_DIR)) fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+const seededTestimonials = [
+  ['Laura M.', 'Remodelación de cocina', 'El acabado en cuarzo quedó impecable. Cumplieron en tiempo y cuidaron cada detalle de la instalación.'],
+  ['Arq. Rodrigo S.', 'Proyecto residencial', 'Nos apoyaron desde la selección del material hasta la entrega final. Trabajo serio y bien ejecutado.'],
+  ['Daniela P.', 'Baño principal', 'La atención fue clara y profesional. El resultado se integró perfecto con el diseño interior que buscábamos.'],
+  ['Mónica R.', 'Cocina integral', 'Desde la primera visita nos explicaron todo con claridad. El resultado superó por mucho lo que imaginábamos.'],
+  ['Ing. Javier C.', 'Casa nueva', 'Gran nivel de detalle en cortes, cantos y uniones. Se nota el cuidado en cada fase del proceso.'],
+  ['Sofía L.', 'Isla y barra social', 'La propuesta de material fue exacta para nuestro estilo. Instalación limpia y muy bien coordinada.'],
+  ['Carlos T.', 'Remodelación completa', 'Cumplieron tiempos y cuidaron la obra. La cubierta quedó impecable y elevó todo el espacio.'],
+  ['Mariana G.', 'Proyecto comercial', 'Nos ayudaron a balancear imagen y funcionalidad. Excelente comunicación durante todo el proyecto.'],
+  ['Arq. Fernanda P.', 'Interiorismo residencial', 'Su ejecución respeta por completo la intención de diseño. Equipo profesional y puntual.'],
+  ['Luis A.', 'Cocina campestre', 'Muy buena asesoría para elegir entre granito y cuarzo. El acabado final luce premium.'],
+  ['Patricia V.', 'Baño y tocador', 'Atención cercana y respuesta rápida. El resultado se integró perfecto con nuestro mobiliario.'],
+  ['Eduardo N.', 'Departamento nuevo', 'Trabajo serio, ordenado y con gran presentación. Recomendables para proyectos exigentes.'],
+  ['Claudia H.', 'Renovación de cocina', 'La diferencia está en los detalles. Se ve elegante, sólido y de alta calidad.'],
+  ['Arq. Iván D.', 'Desarrollo residencial', 'Coordinación excelente con obra y entregas puntuales. Muy buen estándar de instalación.'],
+  ['Gabriela S.', 'Proyecto familiar', 'Recibimos acompañamiento de principio a fin. Quedamos felices con el material y la terminación.'],
+  ['Renata M.', 'Cocina contemporánea', 'Nos orientaron muy bien para elegir el acabado. El resultado final se ve limpio, elegante y funcional.'],
+  ['Miguel Á.', 'Barra para terraza', 'Excelente ejecución en cortes y cantos. La pieza quedó firme, bien nivelada y lista para uso diario.'],
+  ['Arq. Paola R.', 'Remodelación integral', 'Aportaron soluciones prácticas durante obra y cuidaron tiempos. La instalación fue ordenada y profesional.'],
+  ['Héctor B.', 'Recepción comercial', 'Necesitábamos una imagen sobria y resistente. Cumplieron con calidad, detalle y muy buena comunicación.'],
+  ['Valeria C.', 'Baño secundario', 'El equipo llegó puntual, trabajó con cuidado y dejó todo limpio. Quedamos muy satisfechos con el acabado.'],
+].map(([name, project, quote], index) => {
+  const createdAt = new Date(Date.UTC(2026, 0, 2, 12, index, 0)).toISOString();
+  return {
+    id: `seed-testimonial-${index + 1}`,
+    name,
+    project,
+    quote,
+    createdAt,
+    updatedAt: createdAt,
+  };
+});
 
-  if (!fs.existsSync(PROJECTS_FILE)) {
-    fs.writeFileSync(PROJECTS_FILE, JSON.stringify(seededProjects, null, 2));
+function ensureArrayFile(filePath, fallbackItems) {
+  if (!fs.existsSync(filePath)) {
+    fs.writeFileSync(filePath, JSON.stringify(fallbackItems, null, 2));
     return;
   }
 
   try {
-    const parsed = JSON.parse(fs.readFileSync(PROJECTS_FILE, 'utf8'));
+    const parsed = JSON.parse(fs.readFileSync(filePath, 'utf8'));
     if (!Array.isArray(parsed)) {
-      fs.writeFileSync(PROJECTS_FILE, JSON.stringify(seededProjects, null, 2));
+      fs.writeFileSync(filePath, JSON.stringify(fallbackItems, null, 2));
     }
   } catch (error) {
-    fs.writeFileSync(PROJECTS_FILE, JSON.stringify(seededProjects, null, 2));
+    fs.writeFileSync(filePath, JSON.stringify(fallbackItems, null, 2));
   }
+}
+
+function ensureStorage() {
+  if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
+  if (!fs.existsSync(UPLOADS_DIR)) fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+  ensureArrayFile(PROJECTS_FILE, seededProjects);
+  ensureArrayFile(TESTIMONIALS_FILE, seededTestimonials);
 }
 
 function readProjects() {
@@ -66,6 +104,20 @@ function readProjects() {
 
 function writeProjects(projects) {
   fs.writeFileSync(PROJECTS_FILE, JSON.stringify(projects, null, 2));
+}
+
+function readTestimonials() {
+  try {
+    const raw = fs.readFileSync(TESTIMONIALS_FILE, 'utf8');
+    const testimonials = JSON.parse(raw);
+    return Array.isArray(testimonials) ? testimonials : [];
+  } catch (error) {
+    return [];
+  }
+}
+
+function writeTestimonials(testimonials) {
+  fs.writeFileSync(TESTIMONIALS_FILE, JSON.stringify(testimonials, null, 2));
 }
 
 function parseLimit(value) {
@@ -239,6 +291,19 @@ app.get('/api/projects', (req, res) => {
   });
 });
 
+app.get('/api/testimonials', (_req, res) => {
+  const items = [...readTestimonials()].sort((a, b) => {
+    const diff = toTimestamp(b.createdAt) - toTimestamp(a.createdAt);
+    if (diff !== 0) return diff;
+    return String(b.id || '').localeCompare(String(a.id || ''));
+  });
+
+  res.json({
+    items,
+    total: items.length,
+  });
+});
+
 app.post('/api/projects', requireAdminAuth, upload.single('image'), (req, res) => {
   const { title, material, zone, imageUrl } = req.body || {};
   const uploadedImagePath = req.file ? `/uploads/${req.file.filename}` : null;
@@ -316,6 +381,72 @@ app.delete('/api/projects/:id', requireAdminAuth, (req, res) => {
   removeUploadIfExists(removed.imageUrl);
   writeProjects(projects);
 
+  res.status(204).send();
+});
+
+app.post('/api/testimonials', requireAdminAuth, (req, res) => {
+  const { name, project, quote } = req.body || {};
+  const cleanQuote = String(quote || '').trim();
+
+  if (!cleanQuote) {
+    res.status(400).json({ error: 'La experiencia no puede ir vacía.' });
+    return;
+  }
+
+  const now = new Date().toISOString();
+  const newTestimonial = {
+    id: crypto.randomUUID(),
+    name: String(name || '').trim() || 'Cliente',
+    project: String(project || '').trim() || 'Proyecto residencial',
+    quote: cleanQuote,
+    createdAt: now,
+    updatedAt: now,
+  };
+
+  const testimonials = readTestimonials();
+  testimonials.unshift(newTestimonial);
+  writeTestimonials(testimonials);
+
+  res.status(201).json(newTestimonial);
+});
+
+app.patch('/api/testimonials/:id', requireAdminAuth, (req, res) => {
+  const { id } = req.params;
+  const { name, project, quote } = req.body || {};
+  const testimonials = readTestimonials();
+  const index = testimonials.findIndex((item) => item.id === id);
+
+  if (index === -1) {
+    res.status(404).json({ error: 'Experiencia no encontrada.' });
+    return;
+  }
+
+  const current = testimonials[index];
+  const next = { ...current };
+
+  if (typeof name === 'string' && name.trim()) next.name = name.trim();
+  if (typeof project === 'string' && project.trim()) next.project = project.trim();
+  if (typeof quote === 'string' && quote.trim()) next.quote = quote.trim();
+
+  next.updatedAt = new Date().toISOString();
+  testimonials[index] = next;
+  writeTestimonials(testimonials);
+
+  res.json(next);
+});
+
+app.delete('/api/testimonials/:id', requireAdminAuth, (req, res) => {
+  const { id } = req.params;
+  const testimonials = readTestimonials();
+  const index = testimonials.findIndex((item) => item.id === id);
+
+  if (index === -1) {
+    res.status(404).json({ error: 'Experiencia no encontrada.' });
+    return;
+  }
+
+  testimonials.splice(index, 1);
+  writeTestimonials(testimonials);
   res.status(204).send();
 });
 
