@@ -1,6 +1,17 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
-const API_BASE = (import.meta.env.VITE_API_BASE || '').replace(/\/$/, '');
+function resolveApiBase() {
+  const fromEnv = (import.meta.env.VITE_API_BASE || '').replace(/\/$/, '');
+  if (fromEnv) return fromEnv;
+  if (typeof window === 'undefined') return '';
+
+  const { protocol, hostname } = window.location;
+  const isLocalHost = hostname === 'localhost' || hostname === '127.0.0.1';
+  if (isLocalHost) return `${protocol}//${hostname}:8787`;
+  return '';
+}
+
+const API_BASE = resolveApiBase();
 const PAGE_LIMIT = 24;
 const AUTH_STORAGE_KEY = 'novex_admin_token_v1';
 
@@ -22,6 +33,13 @@ function toImageSrc(url) {
   if (url.startsWith('http://') || url.startsWith('https://')) return url;
   if (API_BASE && url.startsWith('/uploads/')) return `${API_BASE}${url}`;
   return url;
+}
+
+function fallbackImage(event) {
+  const image = event.currentTarget;
+  if (image.dataset.fallbackApplied === 'true') return;
+  image.dataset.fallbackApplied = 'true';
+  image.src = '/placeholders/project-1.svg';
 }
 
 function getStoredToken() {
@@ -488,6 +506,7 @@ function AdminPage() {
                   alt={project.title}
                   className="admin-thumb"
                   loading="lazy"
+                  onError={fallbackImage}
                 />
 
                 <div className="admin-project-meta">

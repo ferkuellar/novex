@@ -80,6 +80,11 @@ function parseCursor(value) {
   return Math.max(Math.trunc(parsed), 0);
 }
 
+function toTimestamp(value) {
+  const parsed = Date.parse(String(value || ''));
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
 function isInternalUpload(url) {
   return typeof url === 'string' && url.startsWith('/uploads/');
 }
@@ -218,7 +223,11 @@ app.get('/api/projects', (req, res) => {
   const limit = parseLimit(req.query.limit);
   const cursor = parseCursor(req.query.cursor);
 
-  const projects = readProjects();
+  const projects = [...readProjects()].sort((a, b) => {
+    const diff = toTimestamp(b.createdAt) - toTimestamp(a.createdAt);
+    if (diff !== 0) return diff;
+    return String(b.id || '').localeCompare(String(a.id || ''));
+  });
   const total = projects.length;
   const items = projects.slice(cursor, cursor + limit);
   const nextCursor = cursor + items.length < total ? cursor + items.length : null;

@@ -25,18 +25,20 @@ const materials = [
   },
 ];
 
+function fallbackImage(event) {
+  const image = event.currentTarget;
+  if (image.dataset.fallbackApplied === 'true') return;
+  image.dataset.fallbackApplied = 'true';
+  image.src = '/placeholders/hero-interior.svg';
+}
+
 function MaterialsSection() {
   return (
     <section className="section" id="materiales">
       <div className="container">
         <SectionHeading
           eyebrow="Materiales"
-          title={
-            <>
-              <span className="section-title-main">Materiales que combinan estética y desempeño:</span>
-              <span className="section-title-subline">valor a largo plazo</span>
-            </>
-          }
+          title={<span className="section-title-main section-title-single-line">Materiales que combinan estética y desempeño</span>}
           subtitle="Seleccionamos mármol, granito y cuarzo según el lenguaje arquitectónico del proyecto, nivel de uso y mantenimiento esperado."
           centered
         />
@@ -44,7 +46,12 @@ function MaterialsSection() {
           {materials.map((item) => (
             <article key={item.name} className="material-card reveal">
               <div className={`material-media ${item.tone}`}>
-                <img src={item.image} alt={`${item.name} en aplicación interior`} loading="lazy" />
+                <img
+                  src={item.image}
+                  alt={`${item.name} en aplicación interior`}
+                  loading="lazy"
+                  onError={fallbackImage}
+                />
               </div>
               <div className="material-body">
                 <h3>{item.name}</h3>

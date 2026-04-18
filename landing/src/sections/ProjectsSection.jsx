@@ -1,8 +1,19 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import SectionHeading from '../components/SectionHeading';
 
-const API_BASE = (import.meta.env.VITE_API_BASE || '').replace(/\/$/, '');
-const PAGE_SIZE = 6;
+function resolveApiBase() {
+  const fromEnv = (import.meta.env.VITE_API_BASE || '').replace(/\/$/, '');
+  if (fromEnv) return fromEnv;
+  if (typeof window === 'undefined') return '';
+
+  const { protocol, hostname } = window.location;
+  const isLocalHost = hostname === 'localhost' || hostname === '127.0.0.1';
+  if (isLocalHost) return `${protocol}//${hostname}:8787`;
+  return '';
+}
+
+const API_BASE = resolveApiBase();
+const PAGE_LIMIT = 24;
 
 const fallbackProjects = [
   { id: 'fallback-1', title: 'Cocina de autor', material: 'Cuarzo', zone: 'Chihuahua Norte', imageUrl: '/placeholders/project-1.svg' },
@@ -39,104 +50,190 @@ function toImageSrc(imageUrl) {
   return imageUrl;
 }
 
+function fallbackImage(event) {
+  const image = event.currentTarget;
+  if (image.dataset.fallbackApplied === 'true') return;
+  image.dataset.fallbackApplied = 'true';
+  image.src = '/placeholders/project-1.svg';
+}
+
 function ProjectsSection() {
   const [projects, setProjects] = useState(fallbackProjects);
-  const [nextCursor, setNextCursor] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [apiActive, setApiActive] = useState(false);
-  const sentinelRef = useRef(null);
-  const loadingRef = useRef(false);
+  const [selectedProject, setSelectedProject] = useState(null);
 
-  const loadProjects = useCallback(async (cursor = 0) => {
-    if (loadingRef.current) return;
-    loadingRef.current = true;
-    setIsLoading(true);
+  useEffect(() => {
+    let cancelled = false;
 
-    try {
-      const response = await fetch(`${API_BASE}/api/projects?limit=${PAGE_SIZE}&cursor=${cursor}`);
-      if (!response.ok) throw new Error('No se pudo consultar el portafolio.');
+    const loadAllProjects = async () => {
+      setIsLoading(true);
+      try {
+        const all = [];
+        let cursor = 0;
+        let guard = 0;
+        const base = API_BASE || '';
 
-      const data = await response.json();
-      const incoming = Array.isArray(data.items)
-        ? data.items.map((item, index) => normalizeProject(item, cursor + index))
-        : [];
+        while (guard < 100) {
+          const response = await fetch(`${base}/api/projects?limit=${PAGE_LIMIT}&cursor=${cursor}`);
+          if (!response.ok) throw new Error('No se pudo consultar el portafolio.');
 
-      if (!incoming.length && cursor === 0) {
-        setApiActive(false);
-        setNextCursor(null);
-        setProjects(fallbackProjects);
-        return;
+          const data = await response.json();
+          const batch = Array.isArray(data.items)
+            ? data.items.map((item, index) => normalizeProject(item, cursor + index))
+            : [];
+
+          if (batch.length) all.push(...batch);
+          if (typeof data.nextCursor !== 'number') break;
+          cursor = data.nextCursor;
+          guard += 1;
+        }
+
+        if (!cancelled) {
+          setProjects(all.length ? all : fallbackProjects);
+        }
+      } catch (error) {
+        if (!cancelled) {
+          setProjects(fallbackProjects);
+        }
+      } finally {
+        if (!cancelled) setIsLoading(false);
       }
+    };
 
-      setApiActive(true);
-      setProjects((previous) => {
-        if (cursor === 0) return incoming;
-        const merged = [...previous];
-        const knownIds = new Set(previous.map((item) => item.id));
-        incoming.forEach((item) => {
-          if (!knownIds.has(item.id)) merged.push(item);
-        });
-        return merged;
-      });
-      setNextCursor(typeof data.nextCursor === 'number' ? data.nextCursor : null);
-    } catch (error) {
-      if (cursor === 0) {
-        setApiActive(false);
-        setProjects(fallbackProjects);
-        setNextCursor(null);
-      }
-    } finally {
-      loadingRef.current = false;
-      setIsLoading(false);
-    }
+    loadAllProjects();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   useEffect(() => {
-    loadProjects(0);
-  }, [loadProjects]);
+    if (!selectedProject) return undefined;
 
-  useEffect(() => {
-    if (!apiActive || nextCursor === null || !sentinelRef.current) return undefined;
+    const onKeyDown = (event) => {
+      if (event.key === 'Escape') setSelectedProject(null);
+    };
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const [entry] = entries;
-        if (entry.isIntersecting) loadProjects(nextCursor);
-      },
-      { rootMargin: '140px 0px' },
-    );
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    window.addEventListener('keydown', onKeyDown);
 
-    observer.observe(sentinelRef.current);
-    return () => observer.disconnect();
-  }, [apiActive, loadProjects, nextCursor]);
-
-  const visibleProjects = useMemo(() => projects, [projects]);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener('keydown', onKeyDown);
+    };
+  }, [selectedProject]);
 
   return (
     <section className="section" id="proyectos">
       <div className="container">
         <SectionHeading
-          title="Proyectos que hablan por sí solos"
+          title={<span className="section-title-main section-title-single-line">Proyectos que hablan por sí solos</span>}
           subtitle="Una selección curada de espacios residenciales y comerciales con composición, materialidad y acabado premium."
           centered
         />
-        <div className="gallery-grid">
-          {visibleProjects.map((project, index) => (
-            <article key={`${project.id}-${project.zone}`} className={`project-card p${index + 1} reveal`}>
-              <div className="project-image">
-                <img src={toImageSrc(project.imageUrl)} alt={`${project.title} en ${project.zone}`} loading="lazy" />
-              </div>
-              <div className="project-info">
-                <p>{project.title}</p>
-                <span>{project.material}</span>
-                <small>{project.zone}</small>
-              </div>
-            </article>
-          ))}
+        <div className="projects-marquee reveal" aria-label="Galería continua de proyectos">
+          <div className="projects-lane lane-left">
+            <div className="projects-track">
+              {[0, 1].map((loop) => (
+                <React.Fragment key={`top-loop-${loop}`}>
+                  {projects.map((project, index) => (
+                    <article
+                      key={`top-${loop}-${project.id}-${index}`}
+                      className="projects-slide"
+                      aria-hidden={loop === 1}
+                    >
+                      <button
+                        type="button"
+                        className="projects-slide-button"
+                        onClick={() => setSelectedProject(project)}
+                        tabIndex={loop === 1 ? -1 : 0}
+                        aria-label={`Ver detalles de ${project.title}`}
+                        data-hover-label="Haz click para ver el proyecto"
+                        title="Haz click para ver el proyecto"
+                      >
+                        <img
+                          src={toImageSrc(project.imageUrl)}
+                          alt={`${project.title} en ${project.zone}`}
+                          loading="lazy"
+                          onError={fallbackImage}
+                        />
+                      </button>
+                    </article>
+                  ))}
+                </React.Fragment>
+              ))}
+            </div>
+          </div>
+
+          <div className="projects-lane lane-right">
+            <div className="projects-track">
+              {[0, 1].map((loop) => (
+                <React.Fragment key={`bottom-loop-${loop}`}>
+                  {projects.map((project, index) => (
+                    <article
+                      key={`bottom-${loop}-${project.id}-${index}`}
+                      className="projects-slide"
+                      aria-hidden={loop === 1}
+                    >
+                      <button
+                        type="button"
+                        className="projects-slide-button"
+                        onClick={() => setSelectedProject(project)}
+                        tabIndex={loop === 1 ? -1 : 0}
+                        aria-label={`Ver detalles de ${project.title}`}
+                        data-hover-label="Haz click para ver el proyecto"
+                        title="Haz click para ver el proyecto"
+                      >
+                        <img
+                          src={toImageSrc(project.imageUrl)}
+                          alt={`${project.title} en ${project.zone}`}
+                          loading="lazy"
+                          onError={fallbackImage}
+                        />
+                      </button>
+                    </article>
+                  ))}
+                </React.Fragment>
+              ))}
+            </div>
+          </div>
         </div>
-        <div ref={sentinelRef} className="projects-sentinel" aria-hidden="true" />
-        {isLoading && apiActive ? <p className="projects-loading">Cargando más proyectos...</p> : null}
+        {isLoading ? <p className="projects-loading">Cargando portafolio...</p> : null}
       </div>
+      {selectedProject ? (
+        <div
+          className="project-modal-backdrop"
+          role="dialog"
+          aria-modal="true"
+          aria-label={`Detalles de ${selectedProject.title}`}
+          onClick={() => setSelectedProject(null)}
+        >
+          <div className="project-modal" onClick={(event) => event.stopPropagation()}>
+            <button
+              type="button"
+              className="project-modal-close"
+              aria-label="Cerrar detalles del proyecto"
+              onClick={() => setSelectedProject(null)}
+            >
+              ×
+            </button>
+            <div className="project-modal-image-wrap">
+              <img
+                src={toImageSrc(selectedProject.imageUrl)}
+                alt={`${selectedProject.title} en ${selectedProject.zone}`}
+                className="project-modal-image"
+                onError={fallbackImage}
+              />
+            </div>
+            <div className="project-modal-info">
+              <p className="project-modal-title">{selectedProject.title}</p>
+              <span className="project-modal-material">{selectedProject.material}</span>
+              <small className="project-modal-zone">{selectedProject.zone}</small>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </section>
   );
 }
